@@ -107,7 +107,9 @@ function validate_input() {
             exit 1
         fi
     fi
-    destination="$(readlink -f "$destination")"  # Ensure absolute path
+    
+    # just no...
+    #destination="$(readlink -f "$destination")"  # Ensure absolute path
 
     if [[ "${browser}" != "google-chrome" && "${browser}" != "chromium-browser" && "${browser}" != "firefox" ]]; then
         printf "ERROR: Browser (%s) is not supported, must be one of 'google-chrome', 'chromium-browser' or 'firefox'.\n" "${browser}" >&2
@@ -140,7 +142,7 @@ validate_input
 sleep ${load_wait_time}
 
 # Find the id for the ${browser} window
-browser_wid="$(xdotool search --sync --onlyvisible --class "${browser}" | head -n 1)"
+browser_wid="$(xdotool search --desktop 0 --sync --onlyvisible --class "${browser}" | head -n 1)"
 wid_re='^[0-9]+$'  # window-id must be a valid integer
 if [[ ! "${browser_wid}" =~ ${wid_re} ]]; then
     printf "ERROR: Unable to find X-server window id for browser.\n" >&2
@@ -159,7 +161,7 @@ else
     savefile_dialog_title="Save file"
 fi
 # Find window id for the "Save file" dialog box
-savefile_wid="$(xdotool search --name "$savefile_dialog_title" | head -n 1)"
+savefile_wid="$(xdotool search --desktop 0 --name "$savefile_dialog_title" | head -n 1)"
 if [[ ! "${savefile_wid}" =~ ${wid_re}  ]]; then
     printf "ERROR: Unable to find window id for 'Save File' Dialog.\n" >&2
     exit 1
